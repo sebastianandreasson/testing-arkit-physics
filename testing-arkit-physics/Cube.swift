@@ -17,7 +17,7 @@ class Cube: SCNNode {
         
         let dimension: Float = 0.2
         let cube = SCNBox(width: CGFloat(dimension), height: CGFloat(dimension), length: CGFloat(dimension), chamferRadius: 0)
-        cube.materials = [material]
+        // cube.materials = [material]
         let node = SCNNode(geometry: cube)
         
         // The physicsBody tells SceneKit this geometry should be manipulated by the physics engine

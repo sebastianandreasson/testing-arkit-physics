@@ -20,10 +20,10 @@ class PBRMaterial: NSObject {
         
         mat = SCNMaterial()
         mat!.lightingModel = SCNMaterial.LightingModel.physicallyBased
-        mat!.diffuse.contents = UIImage(named: "./Assets.scnassets/Materials/\(name)/\(name)-albedo.png")
-        mat!.roughness.contents = UIImage(named: "./Assets.scnassets/Materials/\(name)/\(name)-roughness.png")
-        mat!.metalness.contents = UIImage(named: "./Assets.scnassets/Materials/\(name)/\(name)-metal.png")
-        mat!.normal.contents = UIImage(named: "./Assets.scnassets/Materials/\(name)/\(name)-normal.png")
+        mat!.diffuse.contents = UIImage(named: "./Assets.xassets/Materials/\(name)/\(name)-albedo.png")
+        mat!.roughness.contents = UIImage(named: "./Assets.xassets/Materials/\(name)/\(name)-roughness.png")
+        mat!.metalness.contents = UIImage(named: "./Assets.xassets/Materials/\(name)/\(name)-metal.png")
+        mat!.normal.contents = UIImage(named: "./Assets.xassets/Materials/\(name)/\(name)-normal.png")
         mat!.diffuse.wrapS = SCNWrapMode.repeat
         mat!.diffuse.wrapT = SCNWrapMode.repeat
         mat!.roughness.wrapS = SCNWrapMode.repeat

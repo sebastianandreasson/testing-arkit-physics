@@ -8,17 +8,31 @@
 
 /* Begin PBXBuildFile section */
 		441C1925D86184AC5B13305B /* Pods_testing_arkit_physics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E971B06682C98F0DA16D5DBE /* Pods_testing_arkit_physics.framework */; };
+		DE32067A1F9D347400D2FAA3 /* Plane.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3206791F9D347400D2FAA3 /* Plane.swift */; };
+		DE32067C1F9D3A5500D2FAA3 /* Cube.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE32067B1F9D3A5500D2FAA3 /* Cube.swift */; };
+		DE32067E1F9D3A7400D2FAA3 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE32067D1F9D3A7400D2FAA3 /* Config.swift */; };
+		DE3206801F9D3A8F00D2FAA3 /* ConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE32067F1F9D3A8F00D2FAA3 /* ConfigViewController.swift */; };
+		DE3206821F9D3AB300D2FAA3 /* PBRMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3206811F9D3AB300D2FAA3 /* PBRMaterial.swift */; };
+		DE3206841F9D3B3600D2FAA3 /* CollisionCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3206831F9D3B3600D2FAA3 /* CollisionCategory.swift */; };
 		DE71EDF21F9D013C0065761B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE71EDF11F9D013C0065761B /* AppDelegate.swift */; };
 		DE71EDF41F9D013C0065761B /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DE71EDF31F9D013C0065761B /* art.scnassets */; };
 		DE71EDF61F9D013C0065761B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE71EDF51F9D013C0065761B /* ViewController.swift */; };
 		DE71EDF91F9D013C0065761B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE71EDF71F9D013C0065761B /* Main.storyboard */; };
 		DE71EDFB1F9D013C0065761B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE71EDFA1F9D013C0065761B /* Assets.xcassets */; };
 		DE71EDFE1F9D013C0065761B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE71EDFC1F9D013C0065761B /* LaunchScreen.storyboard */; };
+		DEC2A2C21FA11C1000B42893 /* Letter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2A2C11FA11C1000B42893 /* Letter.swift */; };
+		DEC2A2C41FA124D700B42893 /* SocketClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2A2C31FA124D700B42893 /* SocketClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		8C19D13460C0DBBAE397BF74 /* Pods-testing-arkit-physics.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-testing-arkit-physics.debug.xcconfig"; path = "Pods/Target Support Files/Pods-testing-arkit-physics/Pods-testing-arkit-physics.debug.xcconfig"; sourceTree = "<group>"; };
 		C8EC3FEE8147BF07C95AB1DA /* Pods-testing-arkit-physics.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-testing-arkit-physics.release.xcconfig"; path = "Pods/Target Support Files/Pods-testing-arkit-physics/Pods-testing-arkit-physics.release.xcconfig"; sourceTree = "<group>"; };
+		DE3206791F9D347400D2FAA3 /* Plane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plane.swift; sourceTree = "<group>"; };
+		DE32067B1F9D3A5500D2FAA3 /* Cube.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cube.swift; sourceTree = "<group>"; };
+		DE32067D1F9D3A7400D2FAA3 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		DE32067F1F9D3A8F00D2FAA3 /* ConfigViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigViewController.swift; sourceTree = "<group>"; };
+		DE3206811F9D3AB300D2FAA3 /* PBRMaterial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PBRMaterial.swift; sourceTree = "<group>"; };
+		DE3206831F9D3B3600D2FAA3 /* CollisionCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollisionCategory.swift; sourceTree = "<group>"; };
 		DE71EDEE1F9D013C0065761B /* testing-arkit-physics.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "testing-arkit-physics.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE71EDF11F9D013C0065761B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DE71EDF31F9D013C0065761B /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -27,6 +41,8 @@
 		DE71EDFA1F9D013C0065761B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DE71EDFD1F9D013C0065761B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DE71EDFF1F9D013C0065761B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DEC2A2C11FA11C1000B42893 /* Letter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Letter.swift; sourceTree = "<group>"; };
+		DEC2A2C31FA124D700B42893 /* SocketClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketClient.swift; sourceTree = "<group>"; };
 		E971B06682C98F0DA16D5DBE /* Pods_testing_arkit_physics.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_testing_arkit_physics.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -72,6 +88,8 @@
 		DE71EDF01F9D013C0065761B /* testing-arkit-physics */ = {
 			isa = PBXGroup;
 			children = (
+				DEC2A2C31FA124D700B42893 /* SocketClient.swift */,
+				DE3206791F9D347400D2FAA3 /* Plane.swift */,
 				DE71EDF11F9D013C0065761B /* AppDelegate.swift */,
 				DE71EDF31F9D013C0065761B /* art.scnassets */,
 				DE71EDF51F9D013C0065761B /* ViewController.swift */,
@@ -79,6 +97,12 @@
 				DE71EDFA1F9D013C0065761B /* Assets.xcassets */,
 				DE71EDFC1F9D013C0065761B /* LaunchScreen.storyboard */,
 				DE71EDFF1F9D013C0065761B /* Info.plist */,
+				DE32067B1F9D3A5500D2FAA3 /* Cube.swift */,
+				DE32067D1F9D3A7400D2FAA3 /* Config.swift */,
+				DE32067F1F9D3A8F00D2FAA3 /* ConfigViewController.swift */,
+				DE3206811F9D3AB300D2FAA3 /* PBRMaterial.swift */,
+				DE3206831F9D3B3600D2FAA3 /* CollisionCategory.swift */,
+				DEC2A2C11FA11C1000B42893 /* Letter.swift */,
 			);
 			path = "testing-arkit-physics";
 			sourceTree = "<group>";
@@ -225,7 +249,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE32067C1F9D3A5500D2FAA3 /* Cube.swift in Sources */,
+				DE3206821F9D3AB300D2FAA3 /* PBRMaterial.swift in Sources */,
 				DE71EDF61F9D013C0065761B /* ViewController.swift in Sources */,
+				DEC2A2C21FA11C1000B42893 /* Letter.swift in Sources */,
+				DE3206801F9D3A8F00D2FAA3 /* ConfigViewController.swift in Sources */,
+				DEC2A2C41FA124D700B42893 /* SocketClient.swift in Sources */,
+				DE3206841F9D3B3600D2FAA3 /* CollisionCategory.swift in Sources */,
+				DE32067E1F9D3A7400D2FAA3 /* Config.swift in Sources */,
+				DE32067A1F9D347400D2FAA3 /* Plane.swift in Sources */,
 				DE71EDF21F9D013C0065761B /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -364,9 +396,11 @@
 			baseConfigurationReference = 8C19D13460C0DBBAE397BF74 /* Pods-testing-arkit-physics.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 79QH87EDZX;
 				INFOPLIST_FILE = "testing-arkit-physics/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "testingSebastian.testing-arkit-physics";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -380,9 +414,11 @@
 			baseConfigurationReference = C8EC3FEE8147BF07C95AB1DA /* Pods-testing-arkit-physics.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 79QH87EDZX;
 				INFOPLIST_FILE = "testing-arkit-physics/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "testingSebastian.testing-arkit-physics";
 				PRODUCT_NAME = "$(TARGET_NAME)";

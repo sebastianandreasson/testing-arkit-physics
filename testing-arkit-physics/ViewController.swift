@@ -10,15 +10,17 @@ import UIKit
 import SceneKit
 import ARKit
 
-class ViewController: UIViewController, ARSCNViewDelegate, UIGestureRecognizerDelegate, SCNPhysicsContactDelegate, UIPopoverPresentationControllerDelegate {
+class ViewController: UIViewController, ARSessionDelegate, ARSCNViewDelegate, UIGestureRecognizerDelegate, SCNPhysicsContactDelegate, UIPopoverPresentationControllerDelegate, SocketClientDelegate {
     
     @IBOutlet var sceneView: ARSCNView!
     
     // A dictionary of all the current planes being rendered in the scene
     var planes: [UUID:Plane] = [:]
-    var cubes: [Cube] = []
+    var objects: [Letter] = []
     var config = Config()
     var arConfig = ARWorldTrackingConfiguration()
+    var socketClient = SocketClient()
+    var lastPos = SCNVector3Make(0, 0, 0)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,15 +71,18 @@ class ViewController: UIViewController, ARSCNViewDelegate, UIGestureRecognizerDe
         // Setup the ARSCNViewDelegate - this gives us callbacks to handle new
         // geometry creation
         self.sceneView.delegate = self
+        self.socketClient.delegate = self
+        self.sceneView.session.delegate = self
         
         // A dictionary of all the current planes being rendered in the scene
         self.planes = [:]
         
         // A list of all the cubes being rendered in the scene
-        self.cubes = []
+        self.objects = []
         
         // Make things look pretty
         self.sceneView.antialiasingMode = SCNAntialiasingMode.multisampling4X
+        self.sceneView.autoenablesDefaultLighting = true
         
         // This is the object that we add all of our geometry to, if you want
         // to render something you need to add it here
@@ -110,33 +115,16 @@ class ViewController: UIViewController, ARSCNViewDelegate, UIGestureRecognizerDe
     }
     
     func setupLights() {
-        // Turn off all the default lights SceneKit adds since we are handling it ourselves
-        self.sceneView.autoenablesDefaultLighting = false
-        self.sceneView.automaticallyUpdatesLighting = false
-        
-        let env = UIImage(named: "./Assets.scnassets/Environment/spherical.jpg")
-        self.sceneView.scene.lightingEnvironment.contents = env
     }
     
     func setupRecognizers() {
         // Single tap will insert a new piece of geometry into the scene
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(insertCubeFrom))
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(insertObjectFrom))
         tapGestureRecognizer.numberOfTapsRequired = 1
         self.sceneView.addGestureRecognizer(tapGestureRecognizer)
-        
-        // Press and hold will open a config menu for the selected geometry
-        let materialGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(geometryConfigFrom))
-        materialGestureRecognizer.minimumPressDuration = 0.5
-        self.sceneView.addGestureRecognizer(materialGestureRecognizer)
-        
-        // Press and hold with two fingers causes an explosion
-        let explodeGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(explodeFrom))
-        explodeGestureRecognizer.minimumPressDuration = 1
-        explodeGestureRecognizer.numberOfTouchesRequired = 2
-        self.sceneView.addGestureRecognizer(explodeGestureRecognizer)
     }
     
-    @objc func insertCubeFrom(recognizer: UITapGestureRecognizer) {
+    @objc func insertObjectFrom(recognizer: UITapGestureRecognizer) {
         // Take the screen space tap coordinates and pass them to the hitTest method on the ARSCNView instance
         let tapPoint = recognizer.location(in: self.sceneView)
         let result = self.sceneView.hitTest(tapPoint, types: ARHitTestResult.ResultType.existingPlaneUsingExtent)
@@ -149,51 +137,31 @@ class ViewController: UIViewController, ARSCNViewDelegate, UIGestureRecognizerDe
         
         // If there are multiple hits, just pick the closest plane
         let hitResult = result.first
-        self.insertCube(hitResult: hitResult!)
+        self.insertObject(hitResult: hitResult!)
     }
     
-    @objc func explodeFrom(recognizer: UITapGestureRecognizer) {
-        if recognizer.state != UIGestureRecognizerState.began {
-            return
-        }
-        
-        // Perform a hit test using the screen coordinates to see if the user pressed on
-        // a plane.
-        let holdPoint = recognizer.location(in: self.sceneView)
-        let result = self.sceneView.hitTest(holdPoint, types: ARHitTestResult.ResultType.existingPlaneUsingExtent)
-        if result.count == 0 {
-            return
-        }
-        
-        let hitResult = result.first
-        self.explode(hitResult: hitResult!)
-    }
-    
-    @objc func geometryConfigFrom(recognizer: UITapGestureRecognizer) {
-        if recognizer.state != UIGestureRecognizerState.began {
-            return
-        }
-        
-        // Perform a hit test using the screen coordinates to see if the user pressed on
-        // any 3D geometry in the scene, if so we will open a config menu for that
-        // geometry to customize the appearance
-        
-        let holdPoint = recognizer.location(in: self.sceneView)
-        let result = self.sceneView.hitTest(holdPoint, options: [SCNHitTestOption.boundingBoxOnly: true, SCNHitTestOption.firstFoundOnly : true])
-        if result.count == 0 {
-            return
-        }
-        
-        let hitResult = result.first
-        let node = hitResult?.node
-        
-        // We add all the geometry as children of the Plane/Cube SCNNode object, so we can
-        // get the parent and see what type of geometry this is
-        let parentNode = node?.parent
-        if (parentNode?.isKind(of: Cube.classForCoder()))! {
-            (parentNode as! Cube).changeMaterial()
-        } else {
-            (parentNode as! Plane).changeMaterial()
+    func explode() {
+        for object in self.objects {
+            // The distance between the explosion and the geometry
+            var distance = SCNVector3Make(object.worldPosition.x - self.lastPos.x, object.worldPosition.y - self.lastPos.y, object.worldPosition.z - self.lastPos.z)
+            let length: Float = sqrtf(distance.x * distance.x + distance.y * distance.y + distance.z * distance.z)
+            
+            // Set the maximum distance that the explosion will be felt, anything further than 2 meters from
+            // the explosion will not be affected by any forces
+            let maxDistance: Float = 10bf
+            var scale = max(0, maxDistance - length)
+            
+            // Scale the force of the explosion
+            scale = scale * scale * 5
+            
+            // Scale the distance vector to the appropriate scale
+            distance.x = distance.x / length * scale
+            distance.y = distance.y / length * scale
+            distance.z = distance.z / length * scale
+            
+            // Apply a force to the geometry. We apply the force at one of the corners of the cube
+            // to make it spin more, vs just at the center
+            object.childNodes.first?.physicsBody?.applyForce(distance, at: SCNVector3Make(0.05, 0.05, 0.05), asImpulse: true)
         }
     }
     
@@ -215,53 +183,17 @@ class ViewController: UIViewController, ARSCNViewDelegate, UIGestureRecognizerDe
         self.sceneView.session.run(self.arConfig)
     }
     
-    func explode(hitResult: ARHitTestResult) {
-        // For an explosion, we take the world position of the explosion and the position of each piece of geometry
-        // in the world. We then take the distance between those two points, the closer to the explosion point the
-        // geometry is the stronger the force of the explosion.
-        
-        // The hitResult will be a point on the plane, we move the explosion down a little bit below the
-        // plane so that the goemetry fly upwards off the plane
-        let explosionYOffset: Float = 0.1
-        
-        let position = SCNVector3Make(hitResult.worldTransform.columns.3.x, hitResult.worldTransform.columns.3.y.advanced(by: -explosionYOffset), hitResult.worldTransform.columns.3.z)
-        
-        // We need to find all of the geometry affected by the explosion, ideally we would have some
-        // spatial data structure like an octree to efficiently find all geometry close to the explosion
-        // but since we don't have many items, we can just loop through all of the current geometry
-        for cubeNode in self.cubes {
-            // The distance between the explosion and the geometry
-            var distance = SCNVector3Make(cubeNode.worldPosition.x - position.x, cubeNode.worldPosition.y - position.y, cubeNode.worldPosition.z - position.z)
-            let length: Float = sqrtf(distance.x * distance.x + distance.y * distance.y + distance.z * distance.z)
-            
-            // Set the maximum distance that the explosion will be felt, anything further than 2 meters from
-            // the explosion will not be affected by any forces
-            let maxDistance: Float = 2
-            var scale = max(0, maxDistance - length)
-            
-            // Scale the force of the explosion
-            scale = scale * scale * 5
-            
-            // Scale the distance vector to the appropriate scale
-            distance.x = distance.x / length * scale
-            distance.y = distance.y / length * scale
-            distance.z = distance.z / length * scale
-            
-            // Apply a force to the geometry. We apply the force at one of the corners of the cube
-            // to make it spin more, vs just at the center
-            cubeNode.childNodes.first?.physicsBody?.applyForce(distance, at: SCNVector3Make(0.05, 0.05, 0.05), asImpulse: true)
-        }
-    }
-    
-    func insertCube(hitResult: ARHitTestResult) {
-        // We insert the geometry slightly above the point the user tapped, so that it drops onto the plane
-        // using the physics engine
-        let insertionYOffset: Float = 0.5
+    func insertObject(hitResult: ARHitTestResult) {
+        let insertionYOffset: Float = 0
         let position = SCNVector3Make(hitResult.worldTransform.columns.3.x, hitResult.worldTransform.columns.3.y.advanced(by: insertionYOffset), hitResult.worldTransform.columns.3.z)
         
-        let cube = Cube.init(position, with: Cube.currentMaterial())
-        self.cubes.append(cube)
-        self.sceneView.scene.rootNode.addChildNode(cube)
+        self.lastPos = position
+        let object = Letter.init(position, with: randomLetter())
+        self.objects.append(object)
+        self.sceneView.scene.rootNode.addChildNode(object)
+        
+        let force = SCNVector3Make(0.1, 5, 0.1)
+        object.childNodes.first?.physicsBody?.applyForce(force, at: SCNVector3Make(0.05, 0.05, 0.05), asImpulse: true)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -407,4 +339,41 @@ class ViewController: UIViewController, ARSCNViewDelegate, UIGestureRecognizerDe
     func sessionInterruptionEnded(_ session: ARSession) {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
     }
+    
+    func dataReceived(_ text: String) {
+        if text == "escape" {
+            self.explode()
+            return
+        }
+        let object = Letter.init(self.lastPos, with: text)
+        self.objects.append(object)
+        self.sceneView.scene.rootNode.addChildNode(object)
+        
+        let force = SCNVector3Make(0.1, 5, 0.1)
+        object.childNodes.first?.physicsBody?.applyForce(force, at: SCNVector3Make(0.05, 0.05, 0.05), asImpulse: true)
+    }
+    
+    func randomLetter() -> String {
+        let alphabet: [String] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+        let rand = Int(arc4random_uniform(26))
+        return alphabet[rand]
+    }
+    
+//    func skip () {
+//        NSLog("skip func")
+//        self.sceneView.session.delegateQueue?.asyncAfter(deadline: DispatchTime.now() + 1, execute: {
+//            NSLog("pause")
+//            self.sceneView.session.pause()
+//            self.sceneView.session.delegateQueue?.asyncAfter(deadline: DispatchTime.now() + 1, execute: {
+//                self.sceneView.session.run(self.arConfig)
+//                NSLog("run")
+//                self.skip()
+//            })
+//        })
+//    }
+    
+//    func session(_ session: ARSession, didUpdate frame: ARFrame) {
+//        NSLog("timestamp, %D", frame.timestamp)
+//        let queue = session.delegateQueue
+//    }
 }

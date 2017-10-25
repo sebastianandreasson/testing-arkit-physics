@@ -1,0 +1,12 @@
+{
+  "name": "wat",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.13.3",
+    "keypress": "^0.2.1",
+    "socket.io": "^2.0.3"
+  }
+}

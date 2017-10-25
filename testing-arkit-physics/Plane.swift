@@ -33,12 +33,12 @@ class Plane: SCNNode {
         // Since we are using a cube, we only want to render the tron grid
         // on the top face, make the other sides transparent
         let transparentMaterial = SCNMaterial()
-        transparentMaterial.diffuse.contents = UIColor(white: 1.0, alpha: 0.0)
+        transparentMaterial.diffuse.contents = UIColor(white: 1.0, alpha: 0.1)
         
         if hidden {
             self.planeGeometry.materials = [transparentMaterial, transparentMaterial, transparentMaterial, transparentMaterial, transparentMaterial, transparentMaterial]
         } else {
-            self.planeGeometry.materials = [transparentMaterial, transparentMaterial, transparentMaterial, transparentMaterial, material, transparentMaterial]
+            self.planeGeometry.materials = [transparentMaterial, transparentMaterial, transparentMaterial, transparentMaterial, transparentMaterial, transparentMaterial]
         }
         
         let planeNode = SCNNode(geometry: planeGeometry)
@@ -133,7 +133,7 @@ class Plane: SCNNode {
     
     func hide() {
         let transparentMaterial = SCNMaterial()
-        transparentMaterial.diffuse.contents = UIColor(white: 1.0, alpha: 0.0)
+        transparentMaterial.diffuse.contents = UIColor(white: 1.0, alpha: 0.1)
         self.planeGeometry.materials = [transparentMaterial, transparentMaterial, transparentMaterial, transparentMaterial, transparentMaterial, transparentMaterial]
     }
 }
